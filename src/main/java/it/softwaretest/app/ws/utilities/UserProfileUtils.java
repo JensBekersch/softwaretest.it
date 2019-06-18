@@ -1,8 +1,8 @@
-package it.softwaretest.app.ws.utils;
+package it.softwaretest.app.ws.utilities;
 
 import it.softwaretest.app.ws.exceptions.MissingRequiredFieldException;
-import it.softwaretest.app.ws.shared.dto.UserDto;
-import it.softwaretest.app.ws.ui.model.response.ErrorMessages;
+import it.softwaretest.app.ws.shared.dto.impl.UserDto;
+import it.softwaretest.app.ws.ui.model.response.impl.ErrorMessageDefinitions;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -52,7 +52,7 @@ public class UserProfileUtils {
             userDto.getPassword().isEmpty()
         ) {
             throw new MissingRequiredFieldException(
-                    ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()
+                    ErrorMessageDefinitions.MISSING_REQUIRED_FIELD.getErrorMessage()
             );
         }
     }

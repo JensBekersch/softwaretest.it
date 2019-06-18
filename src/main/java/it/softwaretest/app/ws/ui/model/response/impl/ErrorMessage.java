@@ -1,9 +1,11 @@
-package it.softwaretest.app.ws.ui.model.response;
+package it.softwaretest.app.ws.ui.model.response.impl;
+
+import it.softwaretest.app.ws.ui.model.response.ErrorMessageInterface;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class ErrorMessage {
+public class ErrorMessage implements ErrorMessageInterface {
 
     private String errorMessage;
     private String errorMessageKey;

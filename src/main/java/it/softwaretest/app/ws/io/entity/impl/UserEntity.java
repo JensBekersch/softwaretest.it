@@ -1,12 +1,14 @@
-package it.softwaretest.app.ws.io.entity;
+package it.softwaretest.app.ws.io.entity.impl;
+
+import it.softwaretest.app.ws.io.entity.UserEntityInterface;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.io.Serializable;
 
-@Entity(name="Users")
-public class UserEntity implements Serializable {
+@Entity(name = "Users")
+public class UserEntity implements UserEntityInterface, Serializable {
 
     private static final long serialVersionUID = -1666749705772479338L;
 
@@ -71,10 +73,12 @@ public class UserEntity implements Serializable {
     }
 
     public String getEncryptedPassword() {
+
         return encryptedPassword;
     }
 
     public void setEncryptedPassword(String encryptedPassword) {
+
         this.encryptedPassword = encryptedPassword;
     }
 

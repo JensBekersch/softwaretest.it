@@ -1,9 +1,11 @@
-package it.softwaretest.app.ws.ui.model.request;
+package it.softwaretest.app.ws.ui.model.request.impl;
+
+import it.softwaretest.app.ws.ui.model.request.LoginCredentialsInterface;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class LoginCredentials {
+public class LoginCredentials implements LoginCredentialsInterface {
 
     private String userName;
     private String userPassword;

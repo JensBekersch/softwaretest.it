@@ -19,6 +19,6 @@
         <property name="hibernate.c3p0.timeout">300</property>
         <property name="hibernate.c3p0.max_statements">50</property>
 
-        <mapping class="it.softwaretest.app.ws.io.entity.UserEntity"></mapping>
+        <mapping class="it.softwaretest.app.ws.io.entity.impl.UserEntity"></mapping>
     </session-factory>
 </hibernate-configuration>

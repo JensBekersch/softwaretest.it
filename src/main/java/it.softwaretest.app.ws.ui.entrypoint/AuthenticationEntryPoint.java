@@ -1,10 +1,10 @@
 package it.softwaretest.app.ws.ui.entrypoint;
 
-import it.softwaretest.app.ws.service.AuthenticationService;
-import it.softwaretest.app.ws.service.impl.AuthenticationServiceImpl;
-import it.softwaretest.app.ws.shared.dto.UserDto;
-import it.softwaretest.app.ws.ui.model.request.LoginCredentials;
-import it.softwaretest.app.ws.ui.model.response.AuthenticationDetails;
+import it.softwaretest.app.ws.service.AuthenticationServiceInterface;
+import it.softwaretest.app.ws.service.impl.AuthenticationService;
+import it.softwaretest.app.ws.shared.dto.impl.UserDto;
+import it.softwaretest.app.ws.ui.model.request.impl.LoginCredentials;
+import it.softwaretest.app.ws.ui.model.response.impl.AuthenticationDetails;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -22,7 +22,7 @@ public class AuthenticationEntryPoint {
     public AuthenticationDetails userLoggin(LoginCredentials loginCredentials) {
         AuthenticationDetails returnValue = new AuthenticationDetails();
 
-        AuthenticationService authenticationService = new AuthenticationServiceImpl();
+        AuthenticationServiceInterface authenticationService = new AuthenticationService();
         UserDto authenticatedUser = authenticationService.authenticate(loginCredentials.getUserName(), loginCredentials.getUserPassword());
 
         authenticationService.resetSecurityCredentials(loginCredentials.getUserPassword(), authenticatedUser);

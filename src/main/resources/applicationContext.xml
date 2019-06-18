@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans">
+
+
+<!--    <bean class="it.softwaretest.app.ws.ui.model.response.impl.User" id="user" />-->
+<!--    <bean class="it.softwaretest.app.ws.service.impl.UsersService" id="userService" />-->
+<!--    <bean class="it.softwaretest.app.ws.shared.dto.impl.UserDto" id="userDto" />-->
+
+
+<!--    <bean class="it.softwaretest.app.ws.ui.entrypoint.UsersEntryPoint" id="userResolver">-->
+<!--        <constructor-arg ref="user"/>-->
+<!--        <constructor-arg ref="userDto"/>-->
+<!--        <constructor-arg ref="userService"/>-->
+<!--    </bean>-->
+
+
+</beans>

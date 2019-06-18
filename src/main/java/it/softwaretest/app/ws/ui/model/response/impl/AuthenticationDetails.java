@@ -1,9 +1,11 @@
-package it.softwaretest.app.ws.ui.model.response;
+package it.softwaretest.app.ws.ui.model.response.impl;
+
+import it.softwaretest.app.ws.ui.model.response.AuthenticationDetailsInterface;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class AuthenticationDetails {
+public class AuthenticationDetails implements AuthenticationDetailsInterface {
 
     private String id;
     private String token;

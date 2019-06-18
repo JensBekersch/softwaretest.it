@@ -1,9 +1,9 @@
-package it.softwaretest.app.ws.ui.model.request;
+package it.softwaretest.app.ws.ui.model.request.impl;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class CreateUserRequestModel {
+public class CreateUserRequest {
 
     private String firstName;
     private String lastName;

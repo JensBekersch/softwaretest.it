@@ -1,9 +1,11 @@
-package it.softwaretest.app.ws.ui.model.response;
+package it.softwaretest.app.ws.ui.model.response.impl;
+
+import it.softwaretest.app.ws.ui.model.response.DeleteUserProfileResponseInterface;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class DeleteUserProfileResponseModel {
+public class DeleteUserProfileResponse implements DeleteUserProfileResponseInterface {
 
     private RequestOperation requestOperation;
     private ResponseStatus responseStatus;

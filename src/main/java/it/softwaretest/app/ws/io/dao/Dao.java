@@ -1,6 +1,6 @@
 package it.softwaretest.app.ws.io.dao;
 
-import it.softwaretest.app.ws.shared.dto.UserDto;
+import it.softwaretest.app.ws.shared.dto.impl.UserDto;
 
 public interface Dao {
     void openConnection();

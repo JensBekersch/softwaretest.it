@@ -3,31 +3,31 @@ package it.softwaretest.app.ws.service.impl;
 import it.softwaretest.app.ws.exceptions.AuthenticationException;
 import it.softwaretest.app.ws.io.dao.Dao;
 import it.softwaretest.app.ws.io.dao.impl.MySqlDao;
-import it.softwaretest.app.ws.service.AuthenticationService;
-import it.softwaretest.app.ws.service.UsersService;
-import it.softwaretest.app.ws.shared.dto.UserDto;
-import it.softwaretest.app.ws.ui.model.response.ErrorMessages;
-import it.softwaretest.app.ws.utils.UserProfileUtils;
+import it.softwaretest.app.ws.service.AuthenticationServiceInterface;
+import it.softwaretest.app.ws.service.UsersServiceInterface;
+import it.softwaretest.app.ws.shared.dto.impl.UserDto;
+import it.softwaretest.app.ws.ui.model.response.impl.ErrorMessageDefinitions;
+import it.softwaretest.app.ws.utilities.UserProfileUtils;
 
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthenticationService implements AuthenticationServiceInterface {
 
     Dao database;
 
     @Override
     public UserDto authenticate(String userName, String password) throws AuthenticationException {
-        UsersService usersService = new UsersServiceImpl();
+        UsersServiceInterface usersService = new UsersService();
         String encryptedPassword = null;
         boolean authenticated = false;
 
         UserDto storedUser = usersService.getUserByUserName(userName);
 
         if (storedUser == null)
-            throw new AuthenticationException(ErrorMessages.AUTHENTICATION_FAILED.getErrorMessage());
+            throw new AuthenticationException(ErrorMessageDefinitions.AUTHENTICATION_FAILED.getErrorMessage());
 
 
         encryptedPassword = new UserProfileUtils().generateSecurePassword(password, storedUser.getSalt());
@@ -39,7 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         if (!authenticated)
-            throw new AuthenticationException(ErrorMessages.AUTHENTICATION_FAILED.getErrorMessage());
+            throw new AuthenticationException(ErrorMessageDefinitions.AUTHENTICATION_FAILED.getErrorMessage());
 
         return storedUser;
     }
@@ -55,7 +55,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             encryptedAccessToken = new UserProfileUtils().encrypt(userProfile.getEncryptedPassword(), accessTokenMaterial);
         } catch (InvalidKeySpecException ex) {
-            Logger.getLogger(AuthenticationServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AuthenticationService.class.getName()).log(Level.SEVERE, null, ex);
             throw new AuthenticationException("Failed to issue secure access token");
         }
 

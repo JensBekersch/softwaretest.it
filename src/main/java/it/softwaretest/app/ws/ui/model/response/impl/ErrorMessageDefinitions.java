@@ -1,6 +1,8 @@
-package it.softwaretest.app.ws.ui.model.response;
+package it.softwaretest.app.ws.ui.model.response.impl;
 
-public enum ErrorMessages {
+import it.softwaretest.app.ws.ui.model.response.ErrorMessageDefinitionsInterface;
+
+public enum ErrorMessageDefinitions implements ErrorMessageDefinitionsInterface {
 
     MISSING_REQUIRED_FIELD("Bitte geben Sie einen Wert an!"),
     INTERNAL_SERVER_ERROR("Internal Server Error"),
@@ -12,7 +14,7 @@ public enum ErrorMessages {
 
     private String errorMessage;
 
-    ErrorMessages(String errorMessage) {
+    ErrorMessageDefinitions(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 

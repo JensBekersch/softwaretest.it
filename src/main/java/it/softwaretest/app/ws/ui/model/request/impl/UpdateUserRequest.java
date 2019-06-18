@@ -1,9 +1,11 @@
-package it.softwaretest.app.ws.ui.model.request;
+package it.softwaretest.app.ws.ui.model.request.impl;
+
+import it.softwaretest.app.ws.ui.model.request.UpdateUserRequestInterface;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class UpdateUserRequestModel {
+public class UpdateUserRequest implements UpdateUserRequestInterface {
 
     private String firstName;
     private String lastName;

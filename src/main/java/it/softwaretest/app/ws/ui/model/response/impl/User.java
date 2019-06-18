@@ -1,9 +1,11 @@
-package it.softwaretest.app.ws.ui.model.response;
+package it.softwaretest.app.ws.ui.model.response.impl;
+
+import it.softwaretest.app.ws.ui.model.response.UserInterface;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class UserModel {
+public class User implements UserInterface {
 
     private String userId;
     private String firstName;

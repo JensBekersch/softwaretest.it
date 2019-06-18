@@ -1,9 +1,9 @@
 package it.softwaretest.app.ws.io.dao.impl;
 
 import it.softwaretest.app.ws.io.dao.Dao;
-import it.softwaretest.app.ws.io.entity.UserEntity;
-import it.softwaretest.app.ws.shared.dto.UserDto;
-import it.softwaretest.app.ws.utils.HibernateUtils;
+import it.softwaretest.app.ws.io.entity.impl.UserEntity;
+import it.softwaretest.app.ws.shared.dto.impl.UserDto;
+import it.softwaretest.app.ws.utilities.HibernateCreateSession;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -20,7 +20,7 @@ public class MySqlDao implements Dao {
 
     @Override
     public void openConnection() {
-        SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
+        SessionFactory sessionFactory = HibernateCreateSession.getSessionFactory();
         session = sessionFactory.openSession();
     }
 

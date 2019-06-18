@@ -6,18 +6,18 @@ import it.softwaretest.app.ws.exceptions.CouldNotUpdateRecordException;
 import it.softwaretest.app.ws.exceptions.NoRecordFoundException;
 import it.softwaretest.app.ws.io.dao.Dao;
 import it.softwaretest.app.ws.io.dao.impl.MySqlDao;
-import it.softwaretest.app.ws.service.UsersService;
-import it.softwaretest.app.ws.shared.dto.UserDto;
-import it.softwaretest.app.ws.ui.model.response.ErrorMessages;
-import it.softwaretest.app.ws.utils.UserProfileUtils;
+import it.softwaretest.app.ws.service.UsersServiceInterface;
+import it.softwaretest.app.ws.shared.dto.impl.UserDto;
+import it.softwaretest.app.ws.ui.model.response.impl.ErrorMessageDefinitions;
+import it.softwaretest.app.ws.utilities.UserProfileUtils;
 
-public class UsersServiceImpl implements UsersService {
+public class UsersService implements UsersServiceInterface {
 
     private Dao database;
 
     UserProfileUtils userProfileUtils = new UserProfileUtils();
 
-    public UsersServiceImpl() {
+    public UsersService() {
         this.database = new MySqlDao();
     }
 
@@ -29,7 +29,7 @@ public class UsersServiceImpl implements UsersService {
 
         UserDto existingUser = this.getUserByUserName(user.getEmail());
         if (existingUser != null)
-            throw new CouldNotCreateRecordException(ErrorMessages.RECORD_ALREADY_EXISITS.name());
+            throw new CouldNotCreateRecordException(ErrorMessageDefinitions.RECORD_ALREADY_EXISITS.name());
 
         String userId = userProfileUtils.generateUserId(30);
         user.setUserId(userId);
@@ -53,10 +53,15 @@ public class UsersServiceImpl implements UsersService {
             returnValue = this.database.getUser(id);
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new NoRecordFoundException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+            throw new NoRecordFoundException(ErrorMessageDefinitions.NO_RECORD_FOUND.getErrorMessage());
         } finally {
             this.database.closeConnection();
         }
+
+        System.out.println("-----------------------------------------------------------------------------");
+        System.out.println("getUser in Service Class was successfully called...");
+        System.out.println(returnValue.getUserId());
+        System.out.println("-----------------------------------------------------------------------------");
 
         return returnValue;
     }
@@ -108,7 +113,7 @@ public class UsersServiceImpl implements UsersService {
         }
 
         if (userDto != null)
-            throw new CouldNotDeleteRecordException(ErrorMessages.COULD_NOT_DELETE_RECORD.getErrorMessage());
+            throw new CouldNotDeleteRecordException(ErrorMessageDefinitions.COULD_NOT_DELETE_RECORD.getErrorMessage());
     }
 
     private UserDto saveUser(UserDto user) {

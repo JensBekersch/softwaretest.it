@@ -1,17 +1,16 @@
 package it.softwaretest.app.ws.ui.entrypoint;
 
 import it.softwaretest.app.ws.annotations.Secured;
-import it.softwaretest.app.ws.service.UsersService;
-import it.softwaretest.app.ws.service.impl.UsersServiceImpl;
-import it.softwaretest.app.ws.shared.dto.UserDto;
-import it.softwaretest.app.ws.ui.model.request.CreateUserRequestModel;
-import it.softwaretest.app.ws.ui.model.request.UpdateUserRequestModel;
-import it.softwaretest.app.ws.ui.model.response.DeleteUserProfileResponseModel;
-import it.softwaretest.app.ws.ui.model.response.RequestOperation;
-import it.softwaretest.app.ws.ui.model.response.ResponseStatus;
-import it.softwaretest.app.ws.ui.model.response.UserModel;
+import it.softwaretest.app.ws.service.UsersServiceInterface;
+import it.softwaretest.app.ws.service.impl.UsersService;
+import it.softwaretest.app.ws.shared.dto.impl.UserDto;
+import it.softwaretest.app.ws.ui.model.request.impl.CreateUserRequest;
+import it.softwaretest.app.ws.ui.model.request.impl.UpdateUserRequest;
+import it.softwaretest.app.ws.ui.model.response.impl.DeleteUserProfileResponse;
+import it.softwaretest.app.ws.ui.model.response.impl.RequestOperation;
+import it.softwaretest.app.ws.ui.model.response.impl.ResponseStatus;
+import it.softwaretest.app.ws.ui.model.response.impl.User;
 import org.springframework.beans.BeanUtils;
-import sun.plugin.util.UserProfile;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -22,13 +21,13 @@ public class UsersEntryPoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public UserModel createUser(CreateUserRequestModel requestModel) {
-        UserModel userModel = new UserModel();
+    public User createUser(CreateUserRequest requestModel) {
+        User userModel = new User();
 
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(requestModel, userDto);
 
-        UsersService usersService = new UsersServiceImpl();
+        UsersServiceInterface usersService = new UsersService();
         UserDto createdUserProfile = usersService.createUser(userDto);
 
         BeanUtils.copyProperties(createdUserProfile, userModel);
@@ -40,13 +39,13 @@ public class UsersEntryPoint {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public UserModel getUserProfile(@PathParam("id") String id) {
-        UserModel returnValue = null;
+    public User getUserProfile(@PathParam("id") String id) {
+        User returnValue = null;
 
-        UsersService usersService = new UsersServiceImpl();
+        UsersService usersService = new UsersService();
         UserDto userProfileDto = usersService.getUser(id);
 
-        returnValue = new UserModel();
+        returnValue = new User();
         BeanUtils.copyProperties(userProfileDto, returnValue);
 
         return returnValue;
@@ -57,9 +56,9 @@ public class UsersEntryPoint {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public UserModel updateUserDetails(@PathParam("id") String id, UpdateUserRequestModel userDetails) {
+    public User updateUserDetails(@PathParam("id") String id, UpdateUserRequest userDetails) {
 
-        UsersService usersService = new UsersServiceImpl();
+        UsersServiceInterface usersService = new UsersService();
         UserDto storedUserDetails = usersService.getUser(id);
 
         if(userDetails.getFirstName() != null && !userDetails.getFirstName().isEmpty()) {
@@ -69,7 +68,7 @@ public class UsersEntryPoint {
 
         usersService.updateUserDetails(storedUserDetails);
 
-        UserModel returnValue = new UserModel();
+        User returnValue = new User();
         BeanUtils.copyProperties(storedUserDetails, returnValue);
 
         return returnValue;
@@ -79,10 +78,10 @@ public class UsersEntryPoint {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public DeleteUserProfileResponseModel deleteUserProfile(@PathParam("id") String id) {
+    public DeleteUserProfileResponse deleteUserProfile(@PathParam("id") String id) {
 
-        UsersService usersService = new UsersServiceImpl();
-        DeleteUserProfileResponseModel returnValue = new DeleteUserProfileResponseModel();
+        UsersServiceInterface usersService = new UsersService();
+        DeleteUserProfileResponse returnValue = new DeleteUserProfileResponse();
         returnValue.setRequestOperation(RequestOperation.DELETE);
 
         UserDto storedUserDetails = usersService.getUser(id);

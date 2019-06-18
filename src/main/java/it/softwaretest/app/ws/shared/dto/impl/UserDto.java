@@ -1,10 +1,15 @@
-package it.softwaretest.app.ws.shared.dto;
+package it.softwaretest.app.ws.shared.dto.impl;
+
+import it.softwaretest.app.ws.shared.dto.UserDtoInterface;
 
 import java.io.Serializable;
 
-public class UserDto implements Serializable {
+public class
+UserDto implements UserDtoInterface, Serializable {
 
-    private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 5824615951170476637L;
+
     private long id;
     private String firstName;
     private String lastName;
@@ -86,4 +91,5 @@ public class UserDto implements Serializable {
     public void setToken(String token) {
         this.token = token;
     }
+
 }

@@ -1,10 +1,10 @@
 package it.softwaretest.app.ws.filters;
 
 import it.softwaretest.app.ws.annotations.Secured;
-import it.softwaretest.app.ws.service.UsersService;
-import it.softwaretest.app.ws.service.impl.UsersServiceImpl;
-import it.softwaretest.app.ws.shared.dto.UserDto;
-import it.softwaretest.app.ws.utils.UserProfileUtils;
+import it.softwaretest.app.ws.service.UsersServiceInterface;
+import it.softwaretest.app.ws.service.impl.UsersService;
+import it.softwaretest.app.ws.shared.dto.impl.UserDto;
+import it.softwaretest.app.ws.utilities.UserProfileUtils;
 
 import javax.annotation.Priority;
 import javax.security.sasl.AuthenticationException;
@@ -41,7 +41,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     private void validateToken(String token, String userId) throws AuthenticationException {
 
-        UsersService usersService = new UsersServiceImpl();
+        UsersServiceInterface usersService = new UsersService();
         UserDto userProfile = usersService.getUser(userId);
 
         String completeToken = userProfile.getToken() + token;
