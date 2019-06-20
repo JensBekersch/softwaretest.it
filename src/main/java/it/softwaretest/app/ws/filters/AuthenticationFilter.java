@@ -1,10 +1,10 @@
 package it.softwaretest.app.ws.filters;
 
 import it.softwaretest.app.ws.annotations.Secured;
-import it.softwaretest.app.ws.service.UsersServiceInterface;
 import it.softwaretest.app.ws.service.impl.UsersService;
 import it.softwaretest.app.ws.shared.dto.impl.UserDto;
-import it.softwaretest.app.ws.utilities.UserProfileUtils;
+import it.softwaretest.app.ws.utilities.UserProfileCreationAndValidation;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Priority;
 import javax.security.sasl.AuthenticationException;
@@ -24,44 +24,61 @@ import java.util.logging.Logger;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 
+    @Autowired
+    UsersService usersService;
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
+        this.checkIfAuthorizationHeaderExists(authorizationHeader);
+        this.checkIfTokenIstValid(authorizationHeader, requestContext);
+    }
+
+    private void checkIfAuthorizationHeaderExists(String authorizationHeader) throws IOException {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer")) {
             throw new AuthenticationException("Authorization header must be provided");
         }
-
-        String token = authorizationHeader.substring("Bearer".length()).trim();
-
-        String userId = requestContext.getUriInfo().getPathParameters().getFirst("id");
-
-        validateToken(token, userId);
     }
 
-    private void validateToken(String token, String userId) throws AuthenticationException {
+    private void checkIfTokenIstValid(String authorizationHeader, ContainerRequestContext requestContext) throws IOException  {
+        String token = authorizationHeader.substring("Bearer".length()).trim();
+        String userId = requestContext.getUriInfo().getPathParameters().getFirst("id");
 
-        UsersServiceInterface usersService = new UsersService();
+        this.validateToken(token, userId);
+    }
+
+    private void validateToken(String token, String userId) throws IOException {
         UserDto userProfile = usersService.getUser(userId);
-
         String completeToken = userProfile.getToken() + token;
+        String salt = userProfile.getSalt();
 
         String securePassword = userProfile.getEncryptedPassword();
-        String salt = userProfile.getSalt();
         String accessTokenMaterial = userId + salt;
-        byte[] encryptedAccessToken = null;
+
+        byte[] encryptedAccessToken = this.encryptAccessToken(securePassword, accessTokenMaterial);
+
+        this.authenticateOrThrowErrorMessage(completeToken, encryptedAccessToken);
+    }
+
+    private byte[] encryptAccessToken(String securePassword, String accessTokenMaterial) throws AuthenticationException {
+        byte[] encryptedAccessToken;
 
         try {
-            encryptedAccessToken = new UserProfileUtils().encrypt(securePassword, accessTokenMaterial);
+            encryptedAccessToken = new UserProfileCreationAndValidation().encrypt(securePassword, accessTokenMaterial);
         } catch (InvalidKeySpecException ex) {
             Logger.getLogger(AuthenticationFilter.class.getName()).log(Level.SEVERE, null, ex);
             throw new AuthenticationException("Failed to issue secure access token");
         }
 
+        return encryptedAccessToken;
+    }
+
+    private void authenticateOrThrowErrorMessage(String completeToken, byte[] encryptedAccessToken) throws IOException {
         String encryptedAccessTokenBase64Encoded = Base64.getEncoder().encodeToString(encryptedAccessToken);
 
         if (!encryptedAccessTokenBase64Encoded.equalsIgnoreCase(completeToken))
             throw new AuthenticationException("Authorization token did not match");
-
     }
+
 }

@@ -1,14 +1,14 @@
 package it.softwaretest.app.ws.service.impl;
 
 import it.softwaretest.app.ws.exceptions.AuthenticationException;
-import it.softwaretest.app.ws.io.dao.Dao;
-import it.softwaretest.app.ws.io.dao.impl.MySqlDao;
+
+import it.softwaretest.app.ws.io.repository.impl.UserRepository;
 import it.softwaretest.app.ws.service.AuthenticationServiceInterface;
-import it.softwaretest.app.ws.service.UsersServiceInterface;
 import it.softwaretest.app.ws.shared.dto.impl.UserDto;
 import it.softwaretest.app.ws.ui.model.response.impl.ErrorMessageDefinitions;
-import it.softwaretest.app.ws.utilities.UserProfileUtils;
+import it.softwaretest.app.ws.utilities.UserProfileCreationAndValidation;
 
+import javax.inject.Inject;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.logging.Level;
@@ -16,65 +16,94 @@ import java.util.logging.Logger;
 
 public class AuthenticationService implements AuthenticationServiceInterface {
 
-    Dao database;
+    private UsersService userService;
+    private UserProfileCreationAndValidation userProfileCreationAndValidation;
+    private UserRepository userRepository;
+
+    @Inject
+    public AuthenticationService(UsersService userService, UserProfileCreationAndValidation userProfileCreationAndValidation, UserRepository userRepository) {
+        this.userService = userService;
+        this.userProfileCreationAndValidation = userProfileCreationAndValidation;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDto authenticate(String userName, String password) throws AuthenticationException {
-        UsersServiceInterface usersService = new UsersService();
-        String encryptedPassword = null;
-        boolean authenticated = false;
+        UserDto userDto = this.checkIfUserNameExists(userName);
 
-        UserDto storedUser = usersService.getUserByUserName(userName);
-
-        if (storedUser == null)
-            throw new AuthenticationException(ErrorMessageDefinitions.AUTHENTICATION_FAILED.getErrorMessage());
-
-
-        encryptedPassword = new UserProfileUtils().generateSecurePassword(password, storedUser.getSalt());
-
-        if (encryptedPassword != null && encryptedPassword.equalsIgnoreCase(storedUser.getEncryptedPassword())) {
-            if (userName != null && userName.equalsIgnoreCase(storedUser.getEmail())) {
-                authenticated = true;
-            }
-        }
+        boolean authenticated = this.authenticateUserOrThrowException(userName, password, userDto);
 
         if (!authenticated)
             throw new AuthenticationException(ErrorMessageDefinitions.AUTHENTICATION_FAILED.getErrorMessage());
 
-        return storedUser;
+        return userDto;
+    }
+
+    private UserDto checkIfUserNameExists(String userName) {
+        UserDto userDto = this.userService.getUserByUserName(userName);
+
+        if (userDto == null)
+            throw new AuthenticationException(ErrorMessageDefinitions.AUTHENTICATION_FAILED.getErrorMessage());
+
+        return userDto;
+    }
+
+    private boolean authenticateUserOrThrowException(String userName, String password, UserDto userDto) {
+        String encryptedPassword = new UserProfileCreationAndValidation().generateSecurePassword(password, userDto.getSalt());
+
+        if (encryptedPassword != null && encryptedPassword.equalsIgnoreCase(userDto.getEncryptedPassword())) {
+            return this.checkIfUserNameEqualsUserDto(userName, userDto);
+        }
+
+        return false;
+    }
+
+    private boolean checkIfUserNameEqualsUserDto(String userName, UserDto userDto) {
+        if (userName != null && userName.equalsIgnoreCase(userDto.getEmail())) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    public String issueAccessToken(UserDto userProfile) throws AuthenticationException {
-        String returnValue = null;
-        byte[] encryptedAccessToken = null;
+    public String issueAccessToken(UserDto userDto) throws AuthenticationException {
+        String newSaltAsPostfix = userDto.getSalt();
+        String accessTokenMaterial = userDto.getUserId() + newSaltAsPostfix;
 
-        String newSaltAsPostfix = userProfile.getSalt();
-        String accessTokenMaterial = userProfile.getUserId() + newSaltAsPostfix;
-
-        try {
-            encryptedAccessToken = new UserProfileUtils().encrypt(userProfile.getEncryptedPassword(), accessTokenMaterial);
-        } catch (InvalidKeySpecException ex) {
-            Logger.getLogger(AuthenticationService.class.getName()).log(Level.SEVERE, null, ex);
-            throw new AuthenticationException("Failed to issue secure access token");
-        }
+        byte[] encryptedAccessToken = createEncryptedAccessToken(userDto, accessTokenMaterial);
 
         String encryptedAccessTokenBase64Encoded = Base64.getEncoder().encodeToString(encryptedAccessToken);
 
         int tokenLength = encryptedAccessTokenBase64Encoded.length();
 
         String tokenToSaveToDatabase = encryptedAccessTokenBase64Encoded.substring(0, tokenLength / 2);
-        returnValue = encryptedAccessTokenBase64Encoded.substring(tokenLength / 2, tokenLength);
 
-        userProfile.setToken(tokenToSaveToDatabase);
-        updateUserProfile(userProfile);
+        String returnValue = encryptedAccessTokenBase64Encoded.substring(tokenLength / 2, tokenLength);
+
+        userDto.setToken(tokenToSaveToDatabase);
+
+        updateUserProfile(userDto);
 
         return returnValue;
     }
 
+    private byte[] createEncryptedAccessToken(UserDto userDto, String accessTokenMaterial) throws AuthenticationException {
+        byte[] encryptedAccessToken;
+
+        try {
+            encryptedAccessToken = this.userProfileCreationAndValidation.encrypt(userDto.getEncryptedPassword(), accessTokenMaterial);
+        } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(AuthenticationService.class.getName()).log(Level.SEVERE, null, ex);
+            throw new AuthenticationException("Failed to issue secure access token");
+        }
+
+        return encryptedAccessToken;
+    }
+
     @Override
     public void resetSecurityCredentials(String password, UserDto userProfile) {
-        UserProfileUtils userProfileUtils = new UserProfileUtils();
+        UserProfileCreationAndValidation userProfileUtils = new UserProfileCreationAndValidation();
 
         String salt = userProfileUtils.getSalt(30);
         String securePassword = userProfileUtils.generateSecurePassword(password, salt);
@@ -86,16 +115,12 @@ public class AuthenticationService implements AuthenticationServiceInterface {
     }
 
     private void updateUserProfile(UserDto userProfile) {
-        this.database = new MySqlDao();
         try {
-            this.database.openConnection();
-            this.database.updateUser(userProfile);
+            this.userRepository.openConnection();
+            this.userRepository.updateUser(userProfile);
         } finally {
-            this.database.closeConnection();
+            this.userRepository.closeConnection();
         }
     }
-
-
-
 
 }

@@ -25,4 +25,5 @@ public enum ErrorMessageDefinitions implements ErrorMessageDefinitionsInterface 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
-};
+
+}

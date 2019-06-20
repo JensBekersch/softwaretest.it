@@ -3,17 +3,40 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://www.springframework.org/schema/beans">
 
+    <bean class="it.softwaretest.app.ws.filters.AuthenticationFilter" id="authenticationFilter" />
+    <bean class="it.softwaretest.app.ws.ui.entrypoint.AuthenticationEntryPoint" id="authenticationEntryPoint" />
+    <bean class="it.softwaretest.app.ws.ui.model.response.impl.ErrorMessage" id="errorMessage" />
+    <bean class="it.softwaretest.app.ws.utilities.UserProfileCreationAndValidation" id="userProfileCreationAndValidation" />
+    <bean class="it.softwaretest.app.ws.io.repository.impl.UserRepository" id="userRepository" />
 
-<!--    <bean class="it.softwaretest.app.ws.ui.model.response.impl.User" id="user" />-->
-<!--    <bean class="it.softwaretest.app.ws.service.impl.UsersService" id="userService" />-->
-<!--    <bean class="it.softwaretest.app.ws.shared.dto.impl.UserDto" id="userDto" />-->
-
-
-<!--    <bean class="it.softwaretest.app.ws.ui.entrypoint.UsersEntryPoint" id="userResolver">-->
-<!--        <constructor-arg ref="user"/>-->
-<!--        <constructor-arg ref="userDto"/>-->
-<!--        <constructor-arg ref="userService"/>-->
-<!--    </bean>-->
-
-
+    <bean class="it.softwaretest.app.ws.service.impl.UsersService" id="userService">
+        <constructor-arg ref="userRepository"/>
+        <constructor-arg ref="userProfileCreationAndValidation"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.exceptions.AuthenticationExceptionMapper" id="authenticationExceptionMapper">
+        <constructor-arg ref="errorMessage"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.exceptions.CouldNotCreateRecordExceptionMapper" id="couldNotCreateRecordExceptionMapper">
+        <constructor-arg ref="errorMessage"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.exceptions.CouldNotDeleteRecordExceptionMapper" id="couldNotDeleteRecordExceptionMapper">
+        <constructor-arg ref="errorMessage"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.exceptions.CouldNotUpdateRecordExceptionMapper" id="couldNotUpdateRecordExceptionMapper">
+        <constructor-arg ref="errorMessage"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.exceptions.GenericExceptionMapper" id="genericExceptionMapper">
+        <constructor-arg ref="errorMessage"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.exceptions.MissingRequiredFieldExceptionMapper" id="missingRequiredFieldExceptionMapper">
+        <constructor-arg ref="errorMessage"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.exceptions.NoRecordFoundExceptionMapper" id="noRecordFoundExceptionMapper">
+        <constructor-arg ref="errorMessage"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.service.impl.AuthenticationService" id="authenticationService">
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="userProfileCreationAndValidation"/>
+        <constructor-arg ref="userRepository"/>
+    </bean>
 </beans>

@@ -14,7 +14,7 @@ import java.util.Base64;
 import java.util.Random;
 import java.util.UUID;
 
-public class UserProfileUtils {
+public class UserProfileCreationAndValidation {
 
     private final Random RANDOM = new SecureRandom();
     private final String ALPHABET = "0123456789ABCDEFGHIJKLMNOBQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -22,8 +22,7 @@ public class UserProfileUtils {
     private final int KEY_LENGTH = 256;
 
     public String generateUUID() {
-        String returnValue = UUID.randomUUID().toString().replaceAll("-", "");
-        return returnValue;
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
     private String generateRandomString(int length) {
@@ -62,16 +61,16 @@ public class UserProfileUtils {
     }
 
     public String generateSecurePassword(String password, String salt) {
-        String returnValue = null;
+        String securedPassword;
 
         byte[] securePassword = hash(password.toCharArray(), salt.getBytes());
 
-        returnValue = Base64.getEncoder().encodeToString(securePassword);
+        securedPassword = Base64.getEncoder().encodeToString(securePassword);
 
-        return returnValue;
+        return securedPassword;
     }
 
-    public byte[] hash(char[] password, byte[] salt) {
+    private byte[] hash(char[] password, byte[] salt) {
         PBEKeySpec spec = new PBEKeySpec(password, salt, ITERATIONS, KEY_LENGTH);
         Arrays.fill(password, Character.MIN_VALUE);
         try {
@@ -85,8 +84,7 @@ public class UserProfileUtils {
     }
 
     public byte[] encrypt(String securePassword, String accessTokenMaterial) throws InvalidKeySpecException {
-        byte[] hashAccesToken = hash(securePassword.toCharArray(), accessTokenMaterial.getBytes());
-        return hashAccesToken;
+        return hash(securePassword.toCharArray(), accessTokenMaterial.getBytes());
     }
 
 }

@@ -1,6 +1,6 @@
-package it.softwaretest.app.ws.io.dao.impl;
+package it.softwaretest.app.ws.io.repository.impl;
 
-import it.softwaretest.app.ws.io.dao.Dao;
+import it.softwaretest.app.ws.io.repository.UserRepositoryInterface;
 import it.softwaretest.app.ws.io.entity.impl.UserEntity;
 import it.softwaretest.app.ws.shared.dto.impl.UserDto;
 import it.softwaretest.app.ws.utilities.HibernateCreateSession;
@@ -14,9 +14,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-public class MySqlDao implements Dao {
+public class UserRepository implements UserRepositoryInterface {
 
-    Session session;
+    private Session session;
+
 
     @Override
     public void openConnection() {
@@ -69,7 +70,7 @@ public class MySqlDao implements Dao {
     }
 
     public UserDto saveUser(UserDto user) {
-        UserDto returnValue = null;
+        UserDto returnValue;
 
         UserEntity userEntity = new UserEntity();
         BeanUtils.copyProperties(user, userEntity);
@@ -85,9 +86,9 @@ public class MySqlDao implements Dao {
     }
 
     @Override
-    public void updateUser(UserDto userProfile) {
+    public void updateUser(UserDto userDto) {
         UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(userProfile, userEntity);
+        BeanUtils.copyProperties(userDto, userEntity);
 
         session.beginTransaction();
         session.update(userEntity);

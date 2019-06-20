@@ -11,12 +11,16 @@ import it.softwaretest.app.ws.ui.model.response.impl.RequestOperation;
 import it.softwaretest.app.ws.ui.model.response.impl.ResponseStatus;
 import it.softwaretest.app.ws.ui.model.response.impl.User;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Path("/users")
 public class UsersEntryPoint {
+
+    @Autowired
+    UsersService usersService;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -27,7 +31,6 @@ public class UsersEntryPoint {
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(requestModel, userDto);
 
-        UsersServiceInterface usersService = new UsersService();
         UserDto createdUserProfile = usersService.createUser(userDto);
 
         BeanUtils.copyProperties(createdUserProfile, userModel);
@@ -40,9 +43,8 @@ public class UsersEntryPoint {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public User getUserProfile(@PathParam("id") String id) {
-        User returnValue = null;
+        User returnValue;
 
-        UsersService usersService = new UsersService();
         UserDto userProfileDto = usersService.getUser(id);
 
         returnValue = new User();
@@ -57,8 +59,6 @@ public class UsersEntryPoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public User updateUserDetails(@PathParam("id") String id, UpdateUserRequest userDetails) {
-
-        UsersServiceInterface usersService = new UsersService();
         UserDto storedUserDetails = usersService.getUser(id);
 
         if(userDetails.getFirstName() != null && !userDetails.getFirstName().isEmpty()) {
@@ -79,8 +79,6 @@ public class UsersEntryPoint {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public DeleteUserProfileResponse deleteUserProfile(@PathParam("id") String id) {
-
-        UsersServiceInterface usersService = new UsersService();
         DeleteUserProfileResponse returnValue = new DeleteUserProfileResponse();
         returnValue.setRequestOperation(RequestOperation.DELETE);
 

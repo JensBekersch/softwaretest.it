@@ -1,11 +1,7 @@
 package it.softwaretest.app.ws;
 
-import javax.ws.rs.core.Application;
+import org.glassfish.jersey.server.ResourceConfig;
 import javax.ws.rs.ApplicationPath;
 
 @ApplicationPath("api")
-public class App extends Application {
-
-
-
-}
+public class App extends ResourceConfig {}

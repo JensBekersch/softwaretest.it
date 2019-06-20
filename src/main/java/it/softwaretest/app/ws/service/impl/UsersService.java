@@ -4,80 +4,84 @@ import it.softwaretest.app.ws.exceptions.CouldNotCreateRecordException;
 import it.softwaretest.app.ws.exceptions.CouldNotDeleteRecordException;
 import it.softwaretest.app.ws.exceptions.CouldNotUpdateRecordException;
 import it.softwaretest.app.ws.exceptions.NoRecordFoundException;
-import it.softwaretest.app.ws.io.dao.Dao;
-import it.softwaretest.app.ws.io.dao.impl.MySqlDao;
+import it.softwaretest.app.ws.io.repository.impl.UserRepository;
 import it.softwaretest.app.ws.service.UsersServiceInterface;
 import it.softwaretest.app.ws.shared.dto.impl.UserDto;
 import it.softwaretest.app.ws.ui.model.response.impl.ErrorMessageDefinitions;
-import it.softwaretest.app.ws.utilities.UserProfileUtils;
+import it.softwaretest.app.ws.utilities.UserProfileCreationAndValidation;
+
 
 public class UsersService implements UsersServiceInterface {
 
-    private Dao database;
+    private UserRepository userRepository;
+    private UserProfileCreationAndValidation userProfileCreationAndValidation;
 
-    UserProfileUtils userProfileUtils = new UserProfileUtils();
-
-    public UsersService() {
-        this.database = new MySqlDao();
+    public UsersService(UserRepository userRepository, UserProfileCreationAndValidation userProfileCreationAndValidation) {
+        this.userRepository = userRepository;
+        this.userProfileCreationAndValidation = userProfileCreationAndValidation;
     }
 
     @Override
     public UserDto createUser(UserDto user) {
-        UserDto returnValue = null;
+        this.userProfileCreationAndValidation.validateRequiredFields(user);
 
-        userProfileUtils.validateRequiredFields(user);
+        this.checkIfUserExists(user.getEmail());
 
-        UserDto existingUser = this.getUserByUserName(user.getEmail());
-        if (existingUser != null)
-            throw new CouldNotCreateRecordException(ErrorMessageDefinitions.RECORD_ALREADY_EXISITS.name());
+        user.setUserId(this.createUserId());
 
-        String userId = userProfileUtils.generateUserId(30);
-        user.setUserId(userId);
+        String salt = this.createSalt();
 
-        String salt = userProfileUtils.getSalt(30);
+        String encryptedPassword = this.userProfileCreationAndValidation.generateSecurePassword(user.getPassword(), salt);
 
-        String encryptedPassword = userProfileUtils.generateSecurePassword(user.getPassword(), salt);
         user.setSalt(salt);
         user.setEncryptedPassword(encryptedPassword);
 
-        returnValue = this.saveUser(user);
+        this.saveUser(user);
 
-        return returnValue;
+        return user;
+    }
+
+    private void checkIfUserExists(String userEmail) {
+        if (this.getUserByUserName(userEmail) != null)
+            throw new CouldNotCreateRecordException(ErrorMessageDefinitions.RECORD_ALREADY_EXISITS.name());
+    }
+
+    private String createUserId() {
+        return this.userProfileCreationAndValidation.generateUserId(30);
+    }
+
+    private String createSalt() {
+        return this.userProfileCreationAndValidation.getSalt(30);
     }
 
     public UserDto getUser(String id) {
-        UserDto returnValue = null;
+        UserDto userDto;
 
         try {
-            this.database.openConnection();
-            returnValue = this.database.getUser(id);
+            this.userRepository.openConnection();
+            userDto = this.userRepository.getUser(id);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new NoRecordFoundException(ErrorMessageDefinitions.NO_RECORD_FOUND.getErrorMessage());
         } finally {
-            this.database.closeConnection();
+            this.userRepository.closeConnection();
         }
 
-        System.out.println("-----------------------------------------------------------------------------");
-        System.out.println("getUser in Service Class was successfully called...");
-        System.out.println(returnValue.getUserId());
-        System.out.println("-----------------------------------------------------------------------------");
-
-        return returnValue;
+        return userDto;
     }
 
     @Override
     public UserDto getUserByUserName(String userName) {
-        UserDto userDto = null;
+        UserDto userDto;
 
         if (userName == null || userName.isEmpty())
             return null;
 
         try {
-            this.database.openConnection();
-            userDto = this.database.getUserByUserName(userName);
+            this.userRepository.openConnection();
+            userDto = this.userRepository.getUserByUserName(userName);
         } finally {
-            this.database.closeConnection();
+            this.userRepository.closeConnection();
         }
 
         return userDto;
@@ -86,24 +90,24 @@ public class UsersService implements UsersServiceInterface {
     @Override
     public void updateUserDetails(UserDto userDetails) {
         try {
-            this.database.openConnection();
-            this.database.updateUser(userDetails);
+            this.userRepository.openConnection();
+            this.userRepository.updateUser(userDetails);
         } catch (Exception ex) {
             throw new CouldNotUpdateRecordException(ex.getMessage());
         } finally {
-            this.database.closeConnection();
+            this.userRepository.closeConnection();
         }
     }
 
     @Override
     public void deleteUser(UserDto userDto) {
         try {
-            this.database.openConnection();
-            this.database.deleteUser(userDto);
+            this.userRepository.openConnection();
+            this.userRepository.deleteUser(userDto);
         } catch (Exception ex) {
             throw new CouldNotDeleteRecordException(ex.getMessage());
         } finally {
-            this.database.closeConnection();;
+            this.userRepository.closeConnection();;
         }
 
         try {
@@ -117,13 +121,13 @@ public class UsersService implements UsersServiceInterface {
     }
 
     private UserDto saveUser(UserDto user) {
-        UserDto returnValue = null;
+        UserDto returnValue;
 
         try {
-            this.database.openConnection();
-            returnValue = this.database.saveUser(user);
+            this.userRepository.openConnection();
+            returnValue = this.userRepository.saveUser(user);
         } finally {
-            this.database.closeConnection();
+            this.userRepository.closeConnection();
         }
 
         return returnValue;

@@ -1,8 +1,8 @@
-package it.softwaretest.app.ws.io.dao;
+package it.softwaretest.app.ws.io.repository;
 
 import it.softwaretest.app.ws.shared.dto.impl.UserDto;
 
-public interface Dao {
+public interface UserRepositoryInterface {
     void openConnection();
     UserDto getUserByUserName(String userName);
     UserDto saveUser(UserDto user);
