@@ -1,16 +1,15 @@
 package it.softwaretest.app.ws.ui.entrypoint;
 
+import it.softwaretest.app.ws.User.Builder.GetUserBuilder;
+import it.softwaretest.app.ws.User.Builder.UserDirector;
+import it.softwaretest.app.ws.User.Command.DeleteUserCommand;
+import it.softwaretest.app.ws.User.Command.ModifyUserCommand;
 import it.softwaretest.app.ws.annotations.Secured;
-import it.softwaretest.app.ws.service.UsersServiceInterface;
-import it.softwaretest.app.ws.service.impl.UsersService;
-import it.softwaretest.app.ws.shared.dto.impl.UserDto;
+import it.softwaretest.app.ws.User.Command.CreateUserCommand;
 import it.softwaretest.app.ws.ui.model.request.impl.CreateUserRequest;
 import it.softwaretest.app.ws.ui.model.request.impl.UpdateUserRequest;
 import it.softwaretest.app.ws.ui.model.response.impl.DeleteUserProfileResponse;
-import it.softwaretest.app.ws.ui.model.response.impl.RequestOperation;
-import it.softwaretest.app.ws.ui.model.response.impl.ResponseStatus;
 import it.softwaretest.app.ws.ui.model.response.impl.User;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.*;
@@ -20,22 +19,34 @@ import javax.ws.rs.core.MediaType;
 public class UsersEntryPoint {
 
     @Autowired
-    UsersService usersService;
+    private User user;
+
+    @Autowired
+    private CreateUserCommand createUserCommand;
+
+    @Autowired
+    private ModifyUserCommand modifyUserCommand;
+
+    @Autowired
+    private DeleteUserCommand deleteUserCommand;
+
+    @Autowired
+    private DeleteUserProfileResponse deleteUserProfileResponse;
+
+    @Autowired
+    private UserDirector userDirector;
+
+    @Autowired
+    private GetUserBuilder userBuilder;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User createUser(CreateUserRequest requestModel) {
-        User userModel = new User();
+    public User createUser(CreateUserRequest createUserRequest) {
+        createUserCommand.setRequest(createUserRequest);
+        createUserCommand.executeCommands();
 
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(requestModel, userDto);
-
-        UserDto createdUserProfile = usersService.createUser(userDto);
-
-        BeanUtils.copyProperties(createdUserProfile, userModel);
-
-        return userModel;
+        return user;
     }
 
     @Secured
@@ -43,14 +54,10 @@ public class UsersEntryPoint {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public User getUserProfile(@PathParam("id") String id) {
-        User returnValue;
+        userDirector.setBuilder(this.userBuilder);
+        userDirector.buildUser(id);
 
-        UserDto userProfileDto = usersService.getUser(id);
-
-        returnValue = new User();
-        BeanUtils.copyProperties(userProfileDto, returnValue);
-
-        return returnValue;
+        return this.userBuilder.getUserData().getUser();
     }
 
     @Secured
@@ -59,19 +66,11 @@ public class UsersEntryPoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public User updateUserDetails(@PathParam("id") String id, UpdateUserRequest userDetails) {
-        UserDto storedUserDetails = usersService.getUser(id);
+        modifyUserCommand.setId(id);
+        modifyUserCommand.setUpdateUserRequest(userDetails);
+        modifyUserCommand.executeCommands();
 
-        if(userDetails.getFirstName() != null && !userDetails.getFirstName().isEmpty()) {
-            storedUserDetails.setFirstName(userDetails.getFirstName());
-        }
-        storedUserDetails.setLastName(userDetails.getLastName());
-
-        usersService.updateUserDetails(storedUserDetails);
-
-        User returnValue = new User();
-        BeanUtils.copyProperties(storedUserDetails, returnValue);
-
-        return returnValue;
+        return user;
     }
 
     @Secured
@@ -79,16 +78,10 @@ public class UsersEntryPoint {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public DeleteUserProfileResponse deleteUserProfile(@PathParam("id") String id) {
-        DeleteUserProfileResponse returnValue = new DeleteUserProfileResponse();
-        returnValue.setRequestOperation(RequestOperation.DELETE);
+        deleteUserCommand.setId(id);
+        deleteUserCommand.executeCommands();
 
-        UserDto storedUserDetails = usersService.getUser(id);
-
-        usersService.deleteUser(storedUserDetails);
-
-        returnValue.setResponseStatus(ResponseStatus.SUCCESS);
-
-        return returnValue;
+        return deleteUserProfileResponse;
     }
 
 }

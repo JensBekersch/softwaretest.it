@@ -8,10 +8,34 @@
     <bean class="it.softwaretest.app.ws.ui.model.response.impl.ErrorMessage" id="errorMessage" />
     <bean class="it.softwaretest.app.ws.utilities.UserProfileCreationAndValidation" id="userProfileCreationAndValidation" />
     <bean class="it.softwaretest.app.ws.io.repository.impl.UserRepository" id="userRepository" />
-
+    <bean class="it.softwaretest.app.ws.ui.model.response.impl.User" id="user" />
+    <bean class="it.softwaretest.app.ws.shared.dto.impl.UserDto" id="userDto" />
+    <bean class="it.softwaretest.app.ws.ui.model.response.impl.DeleteUserProfileResponse" id="deleteUserProfileResponse" />
+    <bean class="it.softwaretest.app.ws.User.Builder.UserDirector" id="userDirector" />
     <bean class="it.softwaretest.app.ws.service.impl.UsersService" id="userService">
         <constructor-arg ref="userRepository"/>
         <constructor-arg ref="userProfileCreationAndValidation"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.User.Builder.GetUserBuilder" id="userBuilder" >
+        <constructor-arg ref="user"/>
+        <constructor-arg ref="userDto"/>
+        <constructor-arg ref="userService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.User.Command.CreateUserCommand" id="createUserCommand">
+        <constructor-arg ref="user"/>
+        <constructor-arg ref="userDto"/>
+        <constructor-arg ref="userService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.User.Command.ModifyUserCommand" id="modifyUserCommand">
+        <constructor-arg ref="user"/>
+        <constructor-arg ref="userDto"/>
+        <constructor-arg ref="userService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.User.Command.DeleteUserCommand" id="deleteUserCommand">
+        <constructor-arg ref="user"/>
+        <constructor-arg ref="userDto"/>
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="deleteUserProfileResponse"/>
     </bean>
     <bean class="it.softwaretest.app.ws.exceptions.AuthenticationExceptionMapper" id="authenticationExceptionMapper">
         <constructor-arg ref="errorMessage"/>
