@@ -1,4 +1,4 @@
-package it.softwaretest.app.ws.User.Builder;
+package it.softwaretest.app.ws.user.builder;
 
 public class UserDirector {
 

@@ -1,46 +1,43 @@
-package it.softwaretest.app.ws.User.Command;
+package it.softwaretest.app.ws.user.command;
 
 import it.softwaretest.app.ws.command.AbstractCommand;
 import it.softwaretest.app.ws.command.Command;
 import it.softwaretest.app.ws.service.impl.UsersService;
 import it.softwaretest.app.ws.shared.dto.impl.UserDto;
-import it.softwaretest.app.ws.ui.model.request.impl.UpdateUserRequest;
+import it.softwaretest.app.ws.ui.model.response.impl.DeleteUserProfileResponse;
 import it.softwaretest.app.ws.ui.model.response.impl.User;
 
 import javax.inject.Inject;
 
-public class ModifyUserCommand extends AbstractCommand {
+public class DeleteUserCommand extends AbstractCommand {
 
     private String id;
     private User user;
     private UserDto userDto;
     private UsersService usersService;
-    private UpdateUserRequest userDetails;
+    private DeleteUserProfileResponse deleteUserProfileResponse;
 
     @Inject
-    public ModifyUserCommand(User user, UserDto userDto, UsersService usersService) {
+    public DeleteUserCommand(User user, UserDto userDto, UsersService usersService, DeleteUserProfileResponse deleteUserProfileResponse) {
         this.user = user;
         this.userDto = userDto;
         this.usersService = usersService;
+        this.deleteUserProfileResponse = deleteUserProfileResponse;
     }
 
     @Override
     public void buildCommands() {
-        super.addCommand(this.buildModifyUserCommand());
+        this.addCommand(this.buildDeleteUserCommand());
     }
 
-    private Command buildModifyUserCommand() {
-        Command command = new ModifyUser(this.id, this.user, this.userDto, this.usersService, this.userDetails);
+    private Command buildDeleteUserCommand() {
+        Command command = new DeleteUser(this.id, this.user, this.userDto, this.usersService, this.deleteUserProfileResponse);
 
         return command;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public void setUpdateUserRequest(UpdateUserRequest userDetails) {
-        this.userDetails = userDetails;
     }
 
 }

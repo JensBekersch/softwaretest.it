@@ -1,9 +1,8 @@
-package it.softwaretest.app.ws.User.Command;
+package it.softwaretest.app.ws.user.command;
 
 import it.softwaretest.app.ws.command.Command;
 import it.softwaretest.app.ws.service.impl.UsersService;
 import it.softwaretest.app.ws.shared.dto.impl.UserDto;
-import it.softwaretest.app.ws.ui.model.request.impl.CreateUserRequest;
 import it.softwaretest.app.ws.ui.model.request.impl.UpdateUserRequest;
 import it.softwaretest.app.ws.ui.model.response.impl.User;
 import org.springframework.beans.BeanUtils;

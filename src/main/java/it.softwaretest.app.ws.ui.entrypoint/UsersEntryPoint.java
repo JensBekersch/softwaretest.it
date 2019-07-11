@@ -1,11 +1,11 @@
 package it.softwaretest.app.ws.ui.entrypoint;
 
-import it.softwaretest.app.ws.User.Builder.GetUserBuilder;
-import it.softwaretest.app.ws.User.Builder.UserDirector;
-import it.softwaretest.app.ws.User.Command.DeleteUserCommand;
-import it.softwaretest.app.ws.User.Command.ModifyUserCommand;
+import it.softwaretest.app.ws.user.builder.GetUserBuilder;
+import it.softwaretest.app.ws.user.builder.UserDirector;
+import it.softwaretest.app.ws.user.command.DeleteUserCommand;
+import it.softwaretest.app.ws.user.command.ModifyUserCommand;
 import it.softwaretest.app.ws.annotations.Secured;
-import it.softwaretest.app.ws.User.Command.CreateUserCommand;
+import it.softwaretest.app.ws.user.command.CreateUserCommand;
 import it.softwaretest.app.ws.ui.model.request.impl.CreateUserRequest;
 import it.softwaretest.app.ws.ui.model.request.impl.UpdateUserRequest;
 import it.softwaretest.app.ws.ui.model.response.impl.DeleteUserProfileResponse;

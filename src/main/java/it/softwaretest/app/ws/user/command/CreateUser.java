@@ -1,4 +1,4 @@
-package it.softwaretest.app.ws.User.Command;
+package it.softwaretest.app.ws.user.command;
 
 import it.softwaretest.app.ws.command.Command;
 import it.softwaretest.app.ws.service.impl.UsersService;
