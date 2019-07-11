@@ -11,27 +11,27 @@
     <bean class="it.softwaretest.app.ws.ui.model.response.impl.User" id="user" />
     <bean class="it.softwaretest.app.ws.shared.dto.impl.UserDto" id="userDto" />
     <bean class="it.softwaretest.app.ws.ui.model.response.impl.DeleteUserProfileResponse" id="deleteUserProfileResponse" />
-    <bean class="it.softwaretest.app.ws.user.builder.UserDirector" id="userDirector" />
+    <bean class="it.softwaretest.app.ws.users.builder.UserDirector" id="userDirector" />
     <bean class="it.softwaretest.app.ws.service.impl.UsersService" id="userService">
         <constructor-arg ref="userRepository"/>
         <constructor-arg ref="userProfileCreationAndValidation"/>
     </bean>
-    <bean class="it.softwaretest.app.ws.user.builder.GetUserBuilder" id="userBuilder" >
+    <bean class="it.softwaretest.app.ws.users.builder.GetUserBuilder" id="userBuilder" >
         <constructor-arg ref="user"/>
         <constructor-arg ref="userDto"/>
         <constructor-arg ref="userService"/>
     </bean>
-    <bean class="it.softwaretest.app.ws.user.command.CreateUserCommand" id="createUserCommand">
+    <bean class="it.softwaretest.app.ws.users.command.CreateUserCommand" id="createUserCommand">
         <constructor-arg ref="user"/>
         <constructor-arg ref="userDto"/>
         <constructor-arg ref="userService"/>
     </bean>
-    <bean class="it.softwaretest.app.ws.user.command.ModifyUserCommand" id="modifyUserCommand">
+    <bean class="it.softwaretest.app.ws.users.command.ModifyUserCommand" id="modifyUserCommand">
         <constructor-arg ref="user"/>
         <constructor-arg ref="userDto"/>
         <constructor-arg ref="userService"/>
     </bean>
-    <bean class="it.softwaretest.app.ws.user.command.DeleteUserCommand" id="deleteUserCommand">
+    <bean class="it.softwaretest.app.ws.users.command.DeleteUserCommand" id="deleteUserCommand">
         <constructor-arg ref="user"/>
         <constructor-arg ref="userDto"/>
         <constructor-arg ref="userService"/>
