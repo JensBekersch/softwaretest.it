@@ -12,6 +12,33 @@
     <bean class="it.softwaretest.app.ws.shared.dto.impl.UserDto" id="userDto" />
     <bean class="it.softwaretest.app.ws.ui.model.response.impl.DeleteUserProfileResponse" id="deleteUserProfileResponse" />
     <bean class="it.softwaretest.app.ws.users.builder.UserDirector" id="userDirector" />
+
+    <bean class="it.softwaretest.app.ws.project.builder.ProjectDirector" id="projectDirector" />
+    <bean class="it.softwaretest.app.ws.ui.model.response.impl.Project" id="project" />
+    <bean class="it.softwaretest.app.ws.shared.dto.impl.ProjectDto" id="projectDto" />
+    <bean class="it.softwaretest.app.ws.io.repository.impl.ProjectRepository" id="projectRepository" />
+    <bean class="it.softwaretest.app.ws.service.impl.ProjectService" id="projectService">
+        <constructor-arg ref="projectRepository"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.ui.model.request.impl.CreateProjectRequest" id="createProjectRequest" />
+    <bean class="it.softwaretest.app.ws.project.command.CreateProjectCommand" id="createProjectCommand">
+        <constructor-arg ref="project"/>
+        <constructor-arg ref="projectDto"/>
+        <constructor-arg ref="projectService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.project.builder.GetProjectBuilder" id="projectBuilder" >
+        <constructor-arg ref="projectService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.project.command.ModifyProjectCommand" id="modifyProjectCommand">
+        <constructor-arg ref="project"/>
+        <constructor-arg ref="projectDto"/>
+        <constructor-arg ref="projectService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.project.command.DeleteProjectCommand" id="deleteProjectCommand">
+        <constructor-arg ref="project"/>
+        <constructor-arg ref="projectDto"/>
+        <constructor-arg ref="projectService"/>
+    </bean>
     <bean class="it.softwaretest.app.ws.service.impl.UsersService" id="userService">
         <constructor-arg ref="userRepository"/>
         <constructor-arg ref="userProfileCreationAndValidation"/>
@@ -37,6 +64,38 @@
         <constructor-arg ref="userService"/>
         <constructor-arg ref="deleteUserProfileResponse"/>
     </bean>
+
+    <bean class="it.softwaretest.app.ws.io.repository.impl.SitesRepository" id="sitesRepository" />
+    <bean class="it.softwaretest.app.ws.site.builder.siteBuilder.SiteDirector" id="siteDirector" />
+    <bean class="it.softwaretest.app.ws.site.builder.siteListBuilder.SiteListDirector" id="siteListDirector" />
+    <bean class="it.softwaretest.app.ws.shared.dto.impl.SitesDto" id="sitesDto" />
+    <bean class="it.softwaretest.app.ws.service.impl.SitesService" id="sitesService">
+        <constructor-arg ref="sitesRepository"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.site.command.CreateSiteCommand" id="createSiteCommand">
+        <constructor-arg ref="sitesDto"/>
+        <constructor-arg ref="sitesService"/>
+        <constructor-arg ref="projectService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.site.command.ModifySiteCommand" id="modifySiteCommand">
+        <constructor-arg ref="sitesDto"/>
+        <constructor-arg ref="sitesService"/>
+        <constructor-arg ref="projectService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.site.command.DeleteSiteCommand" id="deleteSiteCommand">
+        <constructor-arg ref="sitesService"/>
+        <constructor-arg ref="projectService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.site.builder.siteBuilder.GetSiteBuilder" id="getSiteBuilder">
+        <constructor-arg ref="sitesService"/>
+        <constructor-arg ref="projectService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.site.builder.siteListBuilder.GetSiteListBuilder" id="getSiteListBuilder">
+        <constructor-arg ref="sitesService"/>
+        <constructor-arg ref="projectService"/>
+    </bean>
+
+
     <bean class="it.softwaretest.app.ws.exceptions.AuthenticationExceptionMapper" id="authenticationExceptionMapper">
         <constructor-arg ref="errorMessage"/>
     </bean>

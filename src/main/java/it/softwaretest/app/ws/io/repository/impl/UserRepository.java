@@ -3,9 +3,6 @@ package it.softwaretest.app.ws.io.repository.impl;
 import it.softwaretest.app.ws.io.repository.UserRepositoryInterface;
 import it.softwaretest.app.ws.io.entity.impl.UserEntity;
 import it.softwaretest.app.ws.shared.dto.impl.UserDto;
-import it.softwaretest.app.ws.utilities.HibernateCreateSession;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.BeanUtils;
 
@@ -14,16 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-public class UserRepository implements UserRepositoryInterface {
-
-    private Session session;
-
-
-    @Override
-    public void openConnection() {
-        SessionFactory sessionFactory = HibernateCreateSession.getSessionFactory();
-        session = sessionFactory.openSession();
-    }
+public class UserRepository extends AbstractRepository implements UserRepositoryInterface {
 
     @Override
     public UserDto getUserByUserName(String userName) {
@@ -103,12 +91,6 @@ public class UserRepository implements UserRepositoryInterface {
         session.beginTransaction();
         session.delete(userEntity);
         session.getTransaction().commit();
-    }
-
-    @Override
-    public void closeConnection() {
-        if (session != null)
-            session.close();
     }
 
 }

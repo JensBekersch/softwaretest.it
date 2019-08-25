@@ -5,7 +5,9 @@ import it.softwaretest.app.ws.io.entity.UserEntityInterface;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.io.Serializable;
+import java.util.Collection;
 
 @Entity(name = "Users")
 public class UserEntity implements UserEntityInterface, Serializable {
@@ -25,7 +27,7 @@ public class UserEntity implements UserEntityInterface, Serializable {
 
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(long id) {
@@ -89,4 +91,5 @@ public class UserEntity implements UserEntityInterface, Serializable {
     public void setToken(String token) {
         this.token = token;
     }
+
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/users")
 public class UsersEntryPoint {
@@ -42,22 +43,22 @@ public class UsersEntryPoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User createUser(CreateUserRequest createUserRequest) {
+    public Response createUser(CreateUserRequest createUserRequest) {
         createUserCommand.setRequest(createUserRequest);
         createUserCommand.executeCommands();
 
-        return user;
+        return Response.ok(user).status(201).build();
     }
 
     @Secured
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public User getUserProfile(@PathParam("id") String id) {
+    public Response getUserProfile(@PathParam("id") String id) {
         userDirector.setBuilder(this.userBuilder);
         userDirector.buildUser(id);
 
-        return this.userBuilder.getUserData().getUser();
+        return Response.ok(this.userBuilder.getUserData().getUser()).status(200).build();
     }
 
     @Secured
@@ -65,23 +66,23 @@ public class UsersEntryPoint {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User updateUserDetails(@PathParam("id") String id, UpdateUserRequest userDetails) {
+    public Response updateUserDetails(@PathParam("id") String id, UpdateUserRequest userDetails) {
         modifyUserCommand.setId(id);
         modifyUserCommand.setUpdateUserRequest(userDetails);
         modifyUserCommand.executeCommands();
 
-        return user;
+        return Response.status(204).build();
     }
 
     @Secured
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public DeleteUserProfileResponse deleteUserProfile(@PathParam("id") String id) {
+    public Response deleteUserProfile(@PathParam("id") String id) {
         deleteUserCommand.setId(id);
         deleteUserCommand.executeCommands();
 
-        return deleteUserProfileResponse;
+        return Response.status(204).build();
     }
 
 }

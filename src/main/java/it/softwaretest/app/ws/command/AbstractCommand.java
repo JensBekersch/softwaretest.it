@@ -13,6 +13,8 @@ public abstract class AbstractCommand {
         for (Command command: this.commandQueue) {
             command.execute();
         }
+
+        this.commandQueue.clear();
     }
 
     public abstract void buildCommands();
