@@ -44,7 +44,7 @@ public class SitesEntryPoint {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createSite(@PathParam("id") String id, CreateSiteRequest createSiteRequest) {
+    public Response createSite(@PathParam("id") String id, CreateSiteRequest createSiteRequest) throws Exception {
         createSiteRequest.setUserId(id);
         createSiteCommand.setSiteRequest(createSiteRequest);
         createSiteCommand.executeCommands();
@@ -77,7 +77,7 @@ public class SitesEntryPoint {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateProject(@PathParam("id") String id, UpdateSiteRequest updateSitetRequest) {
+    public Response updateProject(@PathParam("id") String id, UpdateSiteRequest updateSitetRequest) throws Exception {
         updateSitetRequest.setUserId(id);
         modifySiteCommand.setUpdateRequest(updateSitetRequest);
         modifySiteCommand.executeCommands();
@@ -90,7 +90,7 @@ public class SitesEntryPoint {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteSite(@PathParam("id") String id, DeleteSiteRequest deleteSiteRequest) {
+    public Response deleteSite(@PathParam("id") String id, DeleteSiteRequest deleteSiteRequest) throws Exception {
         deleteSiteRequest.setUserId(id);
         deleteSiteCommand.setDeleteSiteRequest(deleteSiteRequest);
         deleteSiteCommand.executeCommands();

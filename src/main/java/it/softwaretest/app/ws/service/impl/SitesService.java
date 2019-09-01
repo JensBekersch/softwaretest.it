@@ -15,7 +15,6 @@ public class SitesService implements SitesServiceInterface {
     private SitesRepository repository;
 
     public SitesService(SitesRepository repository) {
-
         this.repository = repository;
     }
 

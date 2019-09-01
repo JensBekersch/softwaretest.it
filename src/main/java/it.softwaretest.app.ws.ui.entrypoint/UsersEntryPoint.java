@@ -43,7 +43,7 @@ public class UsersEntryPoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(CreateUserRequest createUserRequest) {
+    public Response createUser(CreateUserRequest createUserRequest) throws Exception {
         createUserCommand.setRequest(createUserRequest);
         createUserCommand.executeCommands();
 
@@ -66,7 +66,7 @@ public class UsersEntryPoint {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateUserDetails(@PathParam("id") String id, UpdateUserRequest userDetails) {
+    public Response updateUserDetails(@PathParam("id") String id, UpdateUserRequest userDetails) throws Exception {
         modifyUserCommand.setId(id);
         modifyUserCommand.setUpdateUserRequest(userDetails);
         modifyUserCommand.executeCommands();
@@ -78,7 +78,7 @@ public class UsersEntryPoint {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteUserProfile(@PathParam("id") String id) {
+    public Response deleteUserProfile(@PathParam("id") String id) throws Exception {
         deleteUserCommand.setId(id);
         deleteUserCommand.executeCommands();
 

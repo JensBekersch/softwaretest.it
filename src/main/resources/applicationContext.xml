@@ -95,6 +95,31 @@
         <constructor-arg ref="projectService"/>
     </bean>
 
+    <bean class="it.softwaretest.app.ws.shared.dto.impl.SiteElementsDto" id="siteElementsDto" />
+    <bean class="it.softwaretest.app.ws.siteElements.builder.SiteElementsDirector" id="siteElementsDirector" />
+    <bean class="it.softwaretest.app.ws.ui.model.response.impl.SiteElements" id="siteElements" />
+    <bean class="it.softwaretest.app.ws.io.repository.impl.SiteElementsRepository" id="siteElementsRepository" />
+    <bean class="it.softwaretest.app.ws.service.impl.SiteElementsService" id="siteElementsService">
+        <constructor-arg ref="siteElementsRepository"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.siteElements.command.CreateSiteElementsCommand" id="createSiteElementsCommand">
+        <constructor-arg ref="siteElementsDto"/>
+        <constructor-arg ref="siteElementsService"/>
+        <constructor-arg ref="sitesService"/>
+        <constructor-arg ref="projectService"/>
+        <constructor-arg ref="projectDto"/>
+        <constructor-arg ref="sitesDto"/>
+        <constructor-arg ref="siteElementsService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.siteElements.builder.GetSiteElementsBuilder" id="getSiteElementsBuilder">
+        <constructor-arg ref="siteElements"/>
+        <constructor-arg ref="siteElementsDto"/>
+        <constructor-arg ref="siteElementsService"/>
+    </bean>
+    <bean class="it.softwaretest.app.ws.siteElements.command.DeleteSiteElementsCommand" id="deleteSiteElementsCommand">
+        <constructor-arg ref="siteElementsDto"/>
+        <constructor-arg ref="siteElementsService"/>
+    </bean>
 
     <bean class="it.softwaretest.app.ws.exceptions.AuthenticationExceptionMapper" id="authenticationExceptionMapper">
         <constructor-arg ref="errorMessage"/>

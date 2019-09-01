@@ -42,7 +42,7 @@ public class ProjectEntryPoint {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createProject(@PathParam("id") String id, CreateProjectRequest createProjectRequest) {
+    public Response createProject(@PathParam("id") String id, CreateProjectRequest createProjectRequest) throws Exception {
         createProjectRequest.setUserId(id);
         createProjectCommand.setProject(createProjectRequest);
         createProjectCommand.executeCommands();
@@ -67,7 +67,7 @@ public class ProjectEntryPoint {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateProject(@PathParam("id") String id, UpdateProjectRequest updateProjectRequest) {
+    public Response updateProject(@PathParam("id") String id, UpdateProjectRequest updateProjectRequest) throws Exception {
         updateProjectRequest.setUserId(id);
         modifyProjectCommand.setUpdateProjectRequest(updateProjectRequest);
         modifyProjectCommand.executeCommands();
@@ -80,7 +80,7 @@ public class ProjectEntryPoint {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteProject(@PathParam("id") String id, DeleteProjectRequest deleteProjectRequest) {
+    public Response deleteProject(@PathParam("id") String id, DeleteProjectRequest deleteProjectRequest) throws Exception {
         deleteProjectRequest.setUserId(id);
         deleteProjectCommand.setDeleteProjectRequest(deleteProjectRequest);
         deleteProjectCommand.executeCommands();

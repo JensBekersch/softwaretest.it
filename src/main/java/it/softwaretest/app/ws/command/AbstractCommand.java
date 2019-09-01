@@ -1,5 +1,6 @@
 package it.softwaretest.app.ws.command;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ public abstract class AbstractCommand {
 
     protected List<Command> commandQueue = new ArrayList<>();
 
-    public void executeCommands() {
+    public void executeCommands() throws Exception {
         this.buildCommands();
 
         for (Command command: this.commandQueue) {

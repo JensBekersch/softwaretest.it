@@ -4,14 +4,15 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
-        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mysql://localhost:3306/html2test</property>
-        <property name="connection.username">administrator</property>
-        <property name="connection.password">WcaDdToTQyTOoCRY</property>
+        <property name="dialect">org.hibernate.dialect.PostgreSQL95Dialect</property>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.url">jdbc:postgresql://localhost:5432/html2test</property>
+        <property name="connection.username">postgres</property>
+        <property name="connection.password">postgres</property>
 
         <property name="id.new_generator_mappings">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="show_sql">true</property>
 
         <property name="hibernate.c3p0.min_size">5</property>
         <property name="hibernate.c3p0.max_size">25</property>
@@ -21,5 +22,7 @@
         <mapping class="it.softwaretest.app.ws.io.entity.impl.ProjectEntity" />
         <mapping class="it.softwaretest.app.ws.io.entity.impl.UserEntity" />
         <mapping class="it.softwaretest.app.ws.io.entity.impl.SitesEntity"/>
+        <mapping class="it.softwaretest.app.ws.io.entity.impl.SiteElementsEntity"/>
+        <mapping class="it.softwaretest.app.ws.io.entity.impl.SingleDomElementEntity"/>
     </session-factory>
 </hibernate-configuration>

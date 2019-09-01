@@ -4,6 +4,7 @@ import it.softwaretest.app.ws.io.entity.SitesEntityInterface;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity(name = "Sites")
 public class SitesEntity implements SitesEntityInterface, Serializable {
