@@ -20,7 +20,7 @@ public class SiteElementsRepository extends AbstractRepository implements SiteEl
 
         Root<SiteElementsEntity> profileRoot = criteria.from(SiteElementsEntity.class);
         criteria.select(profileRoot);
-        criteria.where(criteriaBuilder.equal(profileRoot.get("id"), id));
+        criteria.where(criteriaBuilder.equal(profileRoot.get("siteId"), id));
 
         SiteElementsEntity siteElementsEntity = session.createQuery(criteria).getSingleResult();
 

@@ -45,6 +45,10 @@ public class SitesEntryPoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createSite(@PathParam("id") String id, CreateSiteRequest createSiteRequest) throws Exception {
+
+        System.out.println(createSiteRequest.getName());
+        System.out.println(createSiteRequest.getProject_id());
+        System.out.println(createSiteRequest.getUrl());
         createSiteRequest.setUserId(id);
         createSiteCommand.setSiteRequest(createSiteRequest);
         createSiteCommand.executeCommands();
@@ -54,19 +58,18 @@ public class SitesEntryPoint {
 
     @Secured
     @GET
-    @Path("/{id}")
+    @Path("/{id}/{projectId}/{list}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSiteById(@PathParam("id") String id, GetSiteRequest request) {
-        boolean list = request.getList();
+    public Response getSiteById(@PathParam("id") String id, @PathParam("projectId") long projectId, @PathParam("list") boolean list) {
         if(list) {
             siteListDirector.setSiteListBuilder(this.siteListBuilder);
-            siteListDirector.buildSiteList(request.getId(), id);
+            siteListDirector.buildSiteList(projectId, id);
 
             return Response.ok(this.siteListBuilder.getSiteList()).status(200).build();
         } else {
             siteDirector.setSiteBuilder(this.siteBuilder);
-            siteDirector.buildSite(request.getId(), id);
+            siteDirector.buildSite(projectId, id);
 
             return Response.ok(this.siteBuilder.getSite()).status(200).build();
         }

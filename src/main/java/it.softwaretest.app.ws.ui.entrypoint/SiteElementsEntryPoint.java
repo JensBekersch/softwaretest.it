@@ -43,12 +43,12 @@ public class SiteElementsEntryPoint {
 
     @Secured
     @GET
-    @Path("/{id}")
+    @Path("/{id}/{siteId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProjects(@PathParam("id") String id, GetSiteElements siteElements) {
+    public Response getProjects(@PathParam("id") String id, @PathParam("siteId") long siteId) {
         siteElementsDirector.setBuilder(this.siteElementsBuilder);
-        siteElementsDirector.buildSiteElemets(siteElements.getSiteId());
+        siteElementsDirector.buildSiteElemets(siteId);
 
         return Response.ok(this.siteElementsBuilder.getSiteElementsData()).status(200).build();
     }
